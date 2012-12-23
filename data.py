@@ -68,7 +68,7 @@ class User(db.Model):
     
     def __init__(self, email):
         self.email = email
-        self.joined = datetime.utcnow()
+        self.joined = datetime.datetime.utcnow()
 
     def __repr__(self):
         return '<User %s>' % (self.email,)
