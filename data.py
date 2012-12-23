@@ -1,6 +1,8 @@
 import uuid
 import sqlalchemy.dialects.postgresql
 
+from app import db
+
 class Channel(db.Model):
     """ A source connected through a volume slider. """
     uuid = db.Column(sqlalchemy.dialects.postgresql.UUID(), primary_key=True)
