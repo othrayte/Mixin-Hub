@@ -151,3 +151,5 @@ class Key(db.Model):
 
     def __repr__(self):
         return '<Key %s on %s {%s}>' % (self.role, self.mix, self.uuid)
+
+db.create_all()
