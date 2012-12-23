@@ -1,9 +1,15 @@
+import datetime
+
 import uuid
 import sqlalchemy.dialects.postgresql
 
-import datetime
+import mail
 
-from app import db
+from app import app
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['DATABASE_URL']
+
+from flask.ext.sqlalchemy import SQLAlchemy
+db = SQLAlchemy(app)
 
 class Channel(db.Model):
     """ A source connected through a volume slider. """
@@ -97,7 +103,7 @@ class Client(db.Model):
         self.verified = false
 
     def __repr__(self):
-        return '<Client %s {%s}>' % (self.name, self.uuid)
+        retsurn '<Client %s {%s}>' % (self.name, self.uuid)
 
 class VerifyAction(db.Model):
     """ An action that reuires email verification. """
@@ -114,6 +120,8 @@ class VerifyAction(db.Model):
         self.add = add
         self.client = client
         self.user = user
+
+
 
     def __repr__(self):
         return '<VerifyAction %s client %s {%s}>' % (self.add, self.client, self.uuid)

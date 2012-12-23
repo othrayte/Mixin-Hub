@@ -5,3 +5,4 @@ distribute==0.6.27
 wsgiref==0.1.2
 flask-sqlalchemy==0.16
 psycopg2==2.4.6
+Flask-Mail==0.2
