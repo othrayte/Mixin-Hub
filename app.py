@@ -5,6 +5,12 @@ from flask.ext.sqlalchemy import SQLAlchemy
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['DATABASE_URL']
 
+if not app.debug:
+    import logging, sys
+    handler = logging.StreamHandler(sys.stdout)
+    handler.setLevel(logging.WARNING)
+    app.logger.addHandler(handler)
+
 db = SQLAlchemy(app)
 
 import data
