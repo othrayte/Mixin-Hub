@@ -16,6 +16,8 @@ if not app.debug:
 db = SQLAlchemy(app)
 
 import data
+db.create_all()
+
 from flask import request
 import json
 
