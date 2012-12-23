@@ -117,7 +117,8 @@ def useKey():
 def mixListChannels():
     """ List all channels in a mix.
     Requires sufficient permissions."""
-    if not user.hasRole()
+    if not user.hasRole():
+        pass
     
 @app.route('/mix/channels/add')
 def mixAddChannel():
