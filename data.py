@@ -59,7 +59,7 @@ class User(db.Model):
     email = db.Column(db.String(), primary_key=True)
     joined = db.Column(db.Date())
 
-    clients = db.relationship(Client, backref='user', lazy='dynamic')
+    clients = db.relationship('Client', backref='user', lazy='dynamic')
     unverifiedActions = db.relationship('VerifyAction', backref='user', lazy='dynamic')
     permissions = db.relationship(Permission, backref='user', lazy='dynamic')
     keys = db.relationship('Key', backref='provider', lazy='dynamic')
