@@ -1,5 +1,6 @@
 import os
 
+from app import app
 if not app.debug:
     import logging, sys
     handler = logging.StreamHandler(sys.stdout)

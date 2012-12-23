@@ -103,7 +103,7 @@ class Client(db.Model):
         self.verified = false
 
     def __repr__(self):
-        retsurn '<Client %s {%s}>' % (self.name, self.uuid)
+        return '<Client %s {%s}>' % (self.name, self.uuid)
 
 class VerifyAction(db.Model):
     """ An action that reuires email verification. """
