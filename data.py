@@ -1,6 +1,8 @@
 import uuid
 import sqlalchemy.dialects.postgresql
 
+import datetime
+
 from app import db
 
 class Channel(db.Model):
@@ -66,6 +68,7 @@ class User(db.Model):
     
     def __init__(self, email):
         self.email = email
+        self.joined = datetime.utcnow()
 
     def __repr__(self):
         return '<User %s>' % (self.email,)
