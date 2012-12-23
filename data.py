@@ -6,7 +6,6 @@ import sqlalchemy.dialects.postgresql
 import mail
 
 from app import app
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['DATABASE_URL']
 
 from flask.ext.sqlalchemy import SQLAlchemy
 db = SQLAlchemy(app)
