@@ -7,9 +7,10 @@ class Channel(db.Model):
     """ A source connected through a volume slider. """
     __tablename__ = 'channels'
 
-    uuid = db.Column(sqlalchemy.dialects.postgresql.UUID(), primary_key=True)
+    uuid = db.Column(sqlalchemy.dialects.postgresql.UUID, primary_key=True)
     sourceUri = db.Column(db.String())
     volume = db.Column(db.Integer)
+    mix_uuid = db.Column(sqlalchemy.dialects.postgresql.UUID, db.ForeignKey('mixes.uuid'))
 
     def __init__(self, sourceUri, volume):
         self.uuid = uuid.uuid4()
@@ -23,7 +24,8 @@ class Mix(db.Model):
     """ A configuration describing how to mix sources together. """
     __tablename__ = 'mixes'
     
-    uuid = db.Column(sqlalchemy.dialects.postgresql.UUID(), primary_key=True)
+    uuid = db.Column(sqlalchemy.dialects.postgresql.UUID, primary_key=True)
+    
     channels = db.relationship('Channel', backref='mix', lazy='dynamic')
     permissions = db.relationship('Permission', backref='mix', lazy='dynamic')
     keys = db.relationship('Key', backref='mix', lazy='dynamic')
@@ -37,7 +39,11 @@ class Mix(db.Model):
 class Permission(db.Model):
     """ Who has what role. """
     __tablename__ = 'permissions'
-    
+
+    user_email = db.Column(db.String, db.ForeignKey('users.email'), primary_key=True)
+    role_codeName = db.Column(db.String, db.ForeignKey('roles.codeName'), primary_key=True)
+    mix_uuid = db.Column(sqlalchemy.dialects.postgresql.UUID, db.ForeignKey('mixes.uuid'), primary_key=True)
+
     def __init__(self, user, role, mix):
         self.user = user
         self.role = role
@@ -51,12 +57,13 @@ class User(db.Model):
     __tablename__ = 'users'
     
     email = db.Column(db.String(), primary_key=True)
+    joined = db.Column(db.Date())
+
     clients = db.relationship(Client, backref='user', lazy='dynamic')
     unverifiedActions = db.relationship('VerifyAction', backref='user', lazy='dynamic')
     permissions = db.relationship(Permission, backref='user', lazy='dynamic')
     keys = db.relationship('Key', backref='provider', lazy='dynamic')
-    joined = db.Column(db.Date())
-
+    
     def __init__(self, email):
         self.email = email
 
@@ -74,11 +81,13 @@ class Client(db.Model):
     """ A spotify client, can be verified by email. """
     __tablename__ = 'clients'
     
-    uuid = db.Column(sqlalchemy.dialects.postgresql.UUID(), primary_key=True)
+    uuid = db.Column(sqlalchemy.dialects.postgresql.UUID, primary_key=True)
     name = db.Column(db.String())
     verified = db.Column(db.Boolean())
-    unverifiedActions = db.relationship('VerifyAction', backref='client', lazy='dynamic')
+    user_email = db.Column(db.String, db.ForeignKey('users.email'))
 
+    unverifiedActions = db.relationship('VerifyAction', backref='client', lazy='dynamic')
+    
     def __init__(self, name):
         self.uuid = uuid.uuid4()
         self.name = name
@@ -91,9 +100,11 @@ class VerifyAction(db.Model):
     """ An action that reuires email verification. """
     __tablename__ = 'verify_actions'
     
-    uuid = db.Column(sqlalchemy.dialects.postgresql.UUID(), primary_key=True)
+    uuid = db.Column(sqlalchemy.dialects.postgresql.UUID, primary_key=True)
     add = db.Column(db.Boolean())
     emailSent = db.Column(db.Date())
+    user_email = db.Column(db.String, db.ForeignKey('users.email'))
+    client_uuid = db.Column(sqlalchemy.dialects.postgresql.UUID, db.ForeignKey('clients.uuid'))
 
     def __init__(self, add, client, user):
         self.uuid = uuid.uuid4()
@@ -110,6 +121,7 @@ class Role(db.Model):
     
     codeName = db.Column(db.String(), primary_key=True)
     displayName = db.Column(db.String())
+    
     permissions = db.relationship(Permission, backref='role', lazy='dynamic')
     keys = db.relationship('Key', backref='role', lazy='dynamic')
 
@@ -124,8 +136,11 @@ class Key(db.Model):
     """ A key that can be given to share a mix with specific role. """
     __tablename__ = 'keys'
     
-    uuid = db.Column(sqlalchemy.dialects.postgresql.UUID(), primary_key=True)
-
+    uuid = db.Column(sqlalchemy.dialects.postgresql.UUID, primary_key=True)
+    mix_uuid = db.Column(sqlalchemy.dialects.postgresql.UUID, db.ForeignKey('mixes.uuid'))
+    user_email = db.Column(db.String, db.ForeignKey('users.email'))
+    role_codeName = db.Column(db.String, db.ForeignKey('roles.codeName'))
+    
     def __init__(self, role, mix):
         self.uuid = uuid.uuid4()
         self.role = role
