@@ -156,7 +156,7 @@ def verifyAction():
     action = data.VerifyAction.query.get(uuid)
     if action.add:
         action.client.verified = True
-    else
+    else:
         db.session.remove(action.client)
 
 if __name__ == '__main__':
